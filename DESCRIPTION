@@ -7,6 +7,7 @@ Author: Atesh Koul
 Maintainer: <atesh.koul@iit.it>
 Description: The functions deal with all kinds of kinematic analysis - right now
     - eyetracking analysis
+    - behavioral data analysis
 License: GPL-V3
 LazyData: TRUE
 Depends:
@@ -15,4 +16,4 @@ Imports:
     plyr,
     ggplot2,
     openxlsx
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
