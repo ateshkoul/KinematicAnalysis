@@ -1,6 +1,13 @@
 This is a readme for the kinematic analysis package.
-For the time being it contains functions in R only for eye-tracking but hopefully it would include a lot more implementations
+For the time being it contains functions in R for eye-tracking and Behavioral Data analysis but hopefully it would include a lot more implementations.
 
-contact: 
+
+To install please use (in R command prompt):
+
+
+install.packages("devtools")
+devtools::install_github("ateshkoul/KinematicAnalysis")
+
+For details please contact: 
 Atesh Koul
 (atesh.koul@gmail.com)

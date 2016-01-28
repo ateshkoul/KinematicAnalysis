@@ -11,21 +11,6 @@ analyse_behav(resultfiles, scriptfile, signal, yesResp, save, integration)
 In current implementation, it finds raw values that are at 0,0 or negative x, negative y values
 uses packages: openxlsx, plyr
 }
-\details{
-Inputs:
-             resultfiles : Raw Data files exported from Eprime (or any text file) with tab as delimiter (not in unicode)
-                           and a proper header
-             scriptfile :  Stimuli files for integration (see below)
-             signal :      the condition that is used as signal
-             yesResp :     The response (1 or 2) that is associated with a correct response
-                           (calculates automatically if not provided)
-                           that is, which response is yes to the signal. this arises because usually
-                           The keys are interchanged in psychology experiments (to control for bias)
-                           This roughly corresponds to the HIT (and is calculated in that fashion)
-             save :        whether to save the results excel file or not
-             integration : Do you want to integrate the results with some parameters of the stimuli?
-                           if this is supplied as 1, you need to provide the scriptfile
-}
 \author{
 Atesh Koul, RBCS, Istituto Italiano di technologia
 

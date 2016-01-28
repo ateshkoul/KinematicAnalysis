@@ -16,21 +16,14 @@ The current setup is based on assumption that the participants can respond in tw
 if this is not the case, it goes to NA
 
 Inputs:
-       Data** - Data frame that is input with columns of response, condition and confidence
-       signal** - condition that will be used as the signal (Compulsary)
-       condition - name of the column that has the condition (guesses if not present)
+       Data - Data frame that is input with columns of response, condition and confidence
+       signal - condition that will be used as the signal
+       condition - name of the column that has the condition
        respSlides - response slides where participants can respond (in Eprime e,g,)
-       yesResp - The response (1 or 2) that is associated with a correct response
-                 (calculates automatically if not provided)
-                 that is, which response is yes to the signal. this arises because usually
-                 the keys are interchanged in psychology experiments (to control for bias)
-                 This roughly corresponds to the HIT (and is calculated in that fashion)#'
-
+       
 Output:
-      Data - dataframe with columns of Dprime, Dprime_all, signal_all, signal and roc confidence
-             Dprime_all and signal_all - consider even the missed responses
-             Better to use Dprime and signal (as HIT,MISS,FA and CR are not really applicable in missed response)
-
+      Data - dataframe with columns of Dprime and roc confidence
+       
 Currently,
 }
 \author{
