@@ -51,8 +51,11 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
   # colnames from previous experiment Exp4 predizioni
   # For main experiment
   colNames <-  c("ExperimentName","Subject","Age","Sex","Condizione","Video","StaticMs","DurataVideo","MovieStart.FramesDropped","MovieStart.RESP","ITI.RESP","MovieStart.ACC","ITI.ACC","MovieStart.RT","ITI.RT","Confidence.RESP","Confidence.RT")
+<<<<<<< HEAD
   # for part 2
   # colNames <-  c("ExperimentName","Subject","Age","Sex","Condizione","Video","StaticMs","DurataVideo","MovieStart.FramesDropped","MovieStart.RESP","ITI.RESP","MovieStart.ACC","ITI.ACC","MovieStart.RT","ITI.RT","VasSlide.VAS","VasSlide.RT")
+=======
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
 
   DataFull <- NULL
   k <- list()
@@ -91,8 +94,17 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
 
     #Data <- Data[Data$Procedure=="ShowStim"|Data$Procedure=="ShowStim2",colNames]
 
+<<<<<<< HEAD
 
     print(ResultCat)
+=======
+    # get the condition column (anything that contains Condi); not obvious as it could have
+    # been in any language, condizione, condition.. whatever helps u sleep at night :)
+    ConditionCol <- names(Data)[grep("Condi",names(Data))]
+
+    # categories based on which u want ur results
+    ResultCat <- c(ResultCat,ConditionCol)
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
 
     # Get the subject no. for saving data
     sub = unique(as.character(Data$Subject))
@@ -132,10 +144,16 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
     # basically the hit - response key that provides correct accuracy on signal trials
     yesResp = unique(Data[which(Data$Condizione == signal & Data$ACC==1),"Resp"])
 
+<<<<<<< HEAD
     # for cases where we dont want to do signal detection
     if(!is.null(signal)) {
       DataSig[[subs]] <- sigDetect(Data,signal,yesResp)
     }
+=======
+
+    DataSig[[subs]] <- sigDetect(Data,signal,yesResp)
+
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
 
 
     ## integration with stumuli information
@@ -211,11 +229,19 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
     }
 
 
+<<<<<<< HEAD
 
 
     # addWorksheet(wbResults,"Results_custom")
     # writeData(wbResults,sheet = "Results_custom",Results[[subs]])
 
+=======
+   
+
+    # addWorksheet(wbResults,"Results_custom")
+    # writeData(wbResults,sheet = "Results_custom",Results[[subs]])
+    
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
     addWorksheet(SubResults,sub)
     writeData(SubResults,sheet = sub,DataSig[[subs]])
 
@@ -239,6 +265,7 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
     # that provides the cluster number irrespective of condition
     # for now, I remove the clusters for placing (4) and passing (2) (we dont use them)
     # and drop the columns of Condizione and Placing which are reduncdant
+<<<<<<< HEAD
 #     DataTrials <- reshape(DataTrials[which(!DataTrials$Condizione==2 & !DataTrials$Condizione==4),],varying = c("Pouring","Drinking"),
 #                           idvar = c("Sub","Trial"),
 #                           direction = "long",
@@ -266,6 +293,31 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
 
   ResultCat <- c("Subject","AccLevel")
   ResultsSigDetect <- ddply(DataFull,.(Subject,AccLevel),summarise,
+=======
+    DataTrials <- reshape(DataTrials[which(!DataTrials$Condizione==2 & !DataTrials$Condizione==4),],varying = c("Pouring","Drinking"),
+                          idvar = c("Sub","Trial"),
+                          direction = "long",
+                          v.names="cluster",
+                          times = c("Pouring","Drinking"),
+                          timevar = "Condition",drop=c("Condizione","Placing"))
+    
+    #colnames(DataTrials)[3] <- "Condition"
+    
+    
+    temp <- data.frame(matrix(unlist(strsplit(as.character(DataFull$Video),"_")), ncol = 2, byrow = TRUE))
+    colnames(temp) <- c("Sub","Trial")
+    
+    DataFull <- cbind(DataFull,temp)
+    DataFull$Sub <- ifelse(!is.numeric(DataFull$Subject),as.numeric(levels(DataFull$Sub)[DataFull$Sub]),DataFull$Subject)
+    DataFull$Trial <- ifelse(!is.numeric(DataFull$Trial),as.numeric(levels(DataFull$Trial)[DataFull$Trial]),DataFull$Trial)
+    DataFull <- merge(DataFull,DataTrials,by=c("Sub","Trial"))
+}
+  # get the results according to the parameters that u like
+  Results_cus <- ddply(DataFull,ResultCat,summarise,acc = mean(ACC),rt = mean(CorrectRT,na.rm=T))
+  
+  
+  ResultsSigDetect <- ddply(DataFull,.(Subject),summarise,
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
         Age = unique(Age),
         pHit = ifelse(!(sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T) >=1),sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T),sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T)-0.05),
         pMISS = sum(Dprime=="MISS",na.rm=T)/sum(signal==1,na.rm=T),
@@ -278,13 +330,18 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
         Resp1 = mean(Resp==1,na.rm=T),
         Resp2 = mean(Resp==2,na.rm=T))
 
+<<<<<<< HEAD
   #ClusterResults <- ddply(DataFull,.(Subject,Condizione,cluster),summarise,clustAcc = mean(ACC,na.rm=T),Condizione=unique(Condizione),Age = unique(Age))
+=======
+  ClusterResults <- ddply(DataFull,.(Subject,Condizione,cluster),summarise,clustAcc = mean(ACC,na.rm=T),Condizione=unique(Condizione),Age = unique(Age))
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
 
 
 
 
   addWorksheet(SubResults,"Combined_Data")
   writeData(SubResults,"Combined_Data",DataFull)
+<<<<<<< HEAD
 
   addWorksheet(SubResults,"Combined_Results")
   writeData(SubResults,"Combined_Results",Results_cus)
@@ -294,6 +351,17 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
 
   #addWorksheet(SubResults,"ClusterResults")
   #writeData(SubResults,"ClusterResults",ClusterResults)
+=======
+  
+  addWorksheet(SubResults,"Combined_Results")
+  writeData(SubResults,"Combined_Results",Results_cus)
+  
+  addWorksheet(SubResults,"SigDetect_Results")
+  writeData(SubResults,"SigDetect_Results",ResultsSigDetect)
+
+  addWorksheet(SubResults,"ClusterResults")
+  writeData(SubResults,"ClusterResults",ClusterResults)
+>>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
 
   if(save){
     saveWorkbook(SubResults,file=paste0(directory[1],"/","Subject_results_prior.xlsx"),overwrite = TRUE)
