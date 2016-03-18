@@ -264,16 +264,9 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
 #                           times = c("Pouring","Drinking"),
 #                           timevar = "Condition",drop=c("Condizione","Placing"))
 
-    #colnames(DataTrials)[3] <- "Condition"
 
-#
-#     temp <- data.frame(matrix(unlist(strsplit(as.character(DataFull$Video),"_")), ncol = 2, byrow = TRUE))
-#     colnames(temp) <- c("Sub","Trial")
-#
-#     DataFull <- cbind(DataFull,temp)
-#     DataFull$Sub <- ifelse(!is.numeric(DataFull$Subject),as.numeric(levels(DataFull$Sub)[DataFull$Sub]),DataFull$Subject)
-#     DataFull$Trial <- ifelse(!is.numeric(DataFull$Trial),as.numeric(levels(DataFull$Trial)[DataFull$Trial]),DataFull$Trial)
-#    DataFull <- merge(DataFull,DataTrials,by=c("Sub","Trial"))
+
+
     if("Condizione" %in% colnames(DataTrials)){
       DataTrials <- DataTrials[,!names(DataTrials) %in% "Condizione"]
     }
