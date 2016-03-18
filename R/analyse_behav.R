@@ -294,7 +294,6 @@ analyse_behav <- function(resultfiles,scriptfile,signal,yesResp,save,integration
     
     #colnames(DataTrials)[3] <- "Condition"
     
-    
     temp <- data.frame(matrix(unlist(strsplit(as.character(DataFull$Video),"_")), ncol = 2, byrow = TRUE))
     colnames(temp) <- c("Sub","Trial")
     
