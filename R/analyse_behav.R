@@ -250,7 +250,6 @@ Results_cus <- ddply(DataFull,ResultCat,summarise,acc = mean(ACC),rt = mean(Corr
 
 
 ResultsSigDetect <- ddply(DataFull,.(Subject),summarise,
-                          >>>>>>> ac2ed9e422474a2467474165a1d8a4d0e8a00358
                           Age = unique(Age),
                           pHit = ifelse(!(sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T) >=1),sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T),sum(Dprime=="HIT",na.rm=T)/sum(signal==1,na.rm=T)-0.05),
                           pMISS = sum(Dprime=="MISS",na.rm=T)/sum(signal==1,na.rm=T),
