@@ -23,6 +23,11 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   # The form of this function should return accuracy as a single value.
   # Extra options should be specified in the classifier function
   # Sample classifier function
+  # load libraries
+  library(caret)
+  library(ggplot2)
+  library(plotly)
+  library(plyr)
   
   # a bit complicated to implement a generic way to feed in variable arguements
   # match variable input
@@ -35,31 +40,43 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
     classifierFun <- function(X,Y){
       # a simplistic k-fold crossvalidation
       # For cross validation
+      library(e1071)
       #set.seed(111)
       # defaults to 10 fold cross validation
       k = 10
-      folds <- cvFolds(nrow(X),K = k)
+      # use stratified cross validation instead
+      # use 80% data for training
+      trainIndex <- createDataPartition(Y, p = .8,list = FALSE,times = k)
       acc <- rep(NA,k)
-      
       for (i in 1:k){
-        trainX <- X[folds$subsets[folds$which != i], ]
-        testX <- X[folds$subsets[folds$which == i], ]
-        trainY <- Y[folds$subsets[folds$which != i]]
-        testY <- Y[folds$subsets[folds$which == i]]
+        trainX <- X[trainIndex[,i],]
+        testX <- X[-trainIndex[,i],]
+        trainY <- Y[trainIndex[,i]]
+        testY <- Y[-trainIndex[,i]]
         model <- svm(trainX, trainY,kernel = "linear") 
         # test with train data
         pred <- predict(model, testX)
         acc[i] <- sum(1 * (pred==testY))/length(pred)
       }
+      
+      # old Method
+      
+#       folds <- cvFolds(nrow(X),K = k)
+#       acc <- rep(NA,k)
+#       
+#       for (i in 1:k){
+#         trainX <- X[folds$subsets[folds$which != i], ]
+#         testX <- X[folds$subsets[folds$which == i], ]
+#         trainY <- Y[folds$subsets[folds$which != i]]
+#         testY <- Y[folds$subsets[folds$which == i]]
+#         model <- svm(trainX, trainY,kernel = "linear") 
+#         # test with train data
+#         pred <- predict(model, testX)
+#         acc[i] <- sum(1 * (pred==testY))/length(pred)
+#       }
       return(mean(acc,na.rm=T))
     }
   }
-  
-
-  # Load libraries
-  library(ggplot2)
-  library(plotly)
-  library(plyr)
   
   # if your targets are not factors, make them..
   if(!(is.factor(Y))) Y <- factor(Y)
@@ -85,7 +102,7 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   # we set seed in the classification function
   set.seed(111)
   
-  distNull <- data.frame(nullAcc=unlist(rlply(nSim, permutator(X,Y),.progress = progress_time())))
+  distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(X,Y),.progress = progress_time())))
   p_value = sum(distNull$nullAcc >= actualAcc)
   
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
@@ -94,7 +111,14 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
     geom_vline(xintercept = actualAcc,colour='red')+
     geom_density(fill='darkblue',alpha=0.3)+
     ggtitle("Permutation curve") +
-    theme_bw()+
+#     geom_curve(x = actualAcc-0.18, xend = actualAcc-0.01, y = max(density(distNull$nullAcc)$y)-0.03, 
+#                yend = max(density(distNull$nullAcc)$y)-0.5,curvature = 0.2,
+#                arrow = grid::arrow(length = grid::unit(0.03, "npc")))+
+    #   annotate("text", x = actualAcc-0.18,y = max(density(distNull$nullAcc)$y)+0.1, 
+    #                       colour="blue", label = paste0('Actual Accuracy ',as.character(signif(actualAcc,2))),size=5)+
+    annotate("text", x = actualAcc-0.03,y = 0.2, 
+             colour="blue", label = as.character(signif(actualAcc,2)),size=4)+
+    theme_bw(base_size = 18)+
     theme(axis.line = element_line(colour = "black"),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -105,8 +129,10 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
     scale_y_continuous(expand = c(0, 0), limits = c(0, max(density(distNull$nullAcc)$y)+ 0.3*sd(density(distNull$nullAcc)$y))) +
     scale_x_continuous(expand = c(0.01, 0.01), limits = c(-0.1, 1.01))
   
-  plotly::ggplotly(plot)
-  Results = list(actualAcc = actualAcc,p_value=p_value,nullAcc = distNull$nullAcc,plot=plot)
+  print(ggplotly(plot))
+  Results = list(actualAcc = actualAcc,p_value=p_value,nullAcc = distNull$nullAcc,plot=plot,distNull= distNull)
   return(Results)
   
 }
+
+
