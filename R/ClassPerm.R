@@ -46,13 +46,13 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
       k = 10
       # use stratified cross validation instead
       # use 80% data for training
-      trainIndex <- createDataPartition(Y, p = .8,list = FALSE,times = k)
+      trainIndex <- createFolds(Y, list = FALSE,k = k)
       acc <- rep(NA,k)
       for (i in 1:k){
-        trainX <- X[trainIndex[,i],]
-        testX <- X[-trainIndex[,i],]
-        trainY <- Y[trainIndex[,i]]
-        testY <- Y[-trainIndex[,i]]
+        trainX <- X[!trainIndex==i,]
+        testX <- X[trainIndex==i,]
+        trainY <- Y[!trainIndex==i]
+        testY <- Y[trainIndex==i]
         model <- svm(trainX, trainY,kernel = "linear") 
         # test with train data
         pred <- predict(model, testX)
@@ -84,7 +84,7 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   # First calculate actual accuracy
   actualAcc <- classifierFun(X,Y)
   # calculate permutation scores by randomly sampling targets
-  
+  chanceAcc <- 1/(length(unique(Y)))
   # permutator is a simple function that randomly shuffles targets and spits out accuracies
   permutator <-function(X,Y){
     Y <- sample(Y)
@@ -109,6 +109,7 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   plot <- ggplot(distNull,aes(nullAcc))+ 
     #geom_line(aes(x = c(actualAcc,actualAcc),y=c(0,max(density(dframe$x)$y)+ sd(density(dframe$x)$y))),data=dataActual)+
     geom_vline(xintercept = actualAcc,colour='red')+
+    geom_vline(xintercept = chanceAcc,colour='red')+
     geom_density(fill='darkblue',alpha=0.3)+
     ggtitle("Permutation curve") +
 #     geom_curve(x = actualAcc-0.18, xend = actualAcc-0.01, y = max(density(distNull$nullAcc)$y)-0.03, 
@@ -118,6 +119,8 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
     #                       colour="blue", label = paste0('Actual Accuracy ',as.character(signif(actualAcc,2))),size=5)+
     annotate("text", x = actualAcc-0.03,y = 0.2, 
              colour="blue", label = as.character(signif(actualAcc,2)),size=4)+
+    annotate("text", x = chanceAcc-0.03,y = 0.2, 
+             colour="blue", label = 'chance',size=4)+
     theme_bw(base_size = 18)+
     theme(axis.line = element_line(colour = "black"),
           panel.grid.major = element_blank(),
