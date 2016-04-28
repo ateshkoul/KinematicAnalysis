@@ -23,10 +23,11 @@ fscore <- function(Data,featSep,featureCol){
   # separate positive and negative feature sets
   posIns  <- Data[Data[,featSep]==unique(Data[,featSep])[1],]
   negIns  <- Data[Data[,featSep]==unique(Data[,featSep])[2],]
-  f_score <- rep(NA,times=length(featureCol))
-  
-  for(feature in featureCol){
-    f_score[match(feature,featureCol)] = (norm(as.matrix(mean(posIns[,feature])-mean(negIns[,feature])))^2)/(tr(cov(as.matrix(posIns[,feature]))) + tr(cov(as.matrix(negIns[,feature]))))
+  f_score <- vector()
+  featureColNames <- names(Data)[featureCol]
+
+  for(feature in featureColNames){
+    f_score[feature] = (norm(as.matrix(mean(posIns[,feature])-mean(negIns[,feature])))^2)/(tr(cov(as.matrix(posIns[,feature]))) + tr(cov(as.matrix(negIns[,feature]))))
   }
   return(f_score)
 }
