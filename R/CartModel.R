@@ -31,7 +31,6 @@ CartModel <- function(DataFrame,responseCol,selectedCol,...){
 
   # if nothing specific is provided, default to all the columns
   if(missing(selectedCol))  selectedCol <- 1:length(names(DataFrame))
-  print(responseCol)
   # get the features
   selectedColNames <- names(DataFrame)[selectedCol]
   # get feature columns without response
