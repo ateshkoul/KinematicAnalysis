@@ -100,7 +100,6 @@ getTunedParam <- function(tuneTrainData,predictorCol,classifierName,featureColNa
   classifierFun <- get(classifierName)
   if(missing(featureColNames)) featureColNames <- 1:length(names(tuneTrainData))
   # defaults
-
   print('Begining Tuning Classifier')
   # only in case of svm, suggest
   if(classifierName=="svm"){
@@ -115,7 +114,8 @@ getTunedParam <- function(tuneTrainData,predictorCol,classifierName,featureColNa
   }
   print(summary(obj))
   plot(obj)
-  k <- best.tune()
+
+  
   return(obj)
 
 }

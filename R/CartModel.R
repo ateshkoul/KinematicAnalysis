@@ -68,9 +68,9 @@ CartModel <- function(DataFrame,responseCol,selectedCol,...){
   k = 2
   # use stratified cross validation instead
   # use 50% data for training
-  trainIndex <- createDataPartition(DatNoNA[,responseCol], p = .5,list = FALSE,times = k)
-  trainX <- DatNoNA[trainIndex[,1],]
-  testX <- DatNoNA[-trainIndex[,1],]
+  trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
+  trainX <- DatNoNA[trainIndex==1,]
+  testX <- DatNoNA[!trainIndex==2,]
   modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
   preDicNAHF <- predict(modelNAHF,testX,type='matrix')
   summary(modelNAHF)
@@ -82,9 +82,9 @@ CartModel <- function(DataFrame,responseCol,selectedCol,...){
 
   # just divide as test and train if u want
   k = 2
-  trainIndex <- createDataPartition(1:length(DataFrame[,responseCol]), p = .5,list = FALSE,times = k)
-  trainX <- DataFrame[trainIndex[,1],]
-  testX <- DataFrame[-trainIndex[,1],]
+  trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
+  trainX <- DataFrame[trainIndex==1,]
+  testX <- DataFrame[!trainIndex==2,]
   modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
   preDicHF <- predict(modelHF,testX,type='matrix')
   summary(modelHF)
