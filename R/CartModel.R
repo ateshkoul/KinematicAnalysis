@@ -13,7 +13,7 @@
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
-##'     \item p-value from permutation
+##'     \item Results = list containing Cart models
 #'
 #'
 #'@author

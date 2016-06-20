@@ -5,13 +5,21 @@
 ##' \enumerate{
 ##' \item Inputs
 ##'   \enumerate{
-##'     \item X = Data matric
-#'      \item Y = labels
+##'     \item classifierName(string) = name of the classifier to be used
+#'      \item genclassifier(function or string) = a classifier function or a name (e.g. Classifier.svm)
+#'      \item Data(dataframe) = dataframe of the data
+#'      \item predictorCol(numeric) = column number that contains the variable to be predicted
+#'      \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
+#'      \item ranges(list) = ranges for tuning support vector machine
+#'      \item tune(logical) = whether tuning of svm parameters should be performed or not
+#'      \item cost(numeric) = regularization parameter of svm
+#'      \item gamma(numeric) = rbf kernel parameter
 #'
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
-##'     \item p-value from permutation
+##'     \item acc = crossvalidation accuracy
+##'     \item accTest = Test accuracy
 #'
 #'
 #'@author
@@ -34,7 +42,7 @@ classifyFun <- function(classifierName,genclassifier,Data,predictorCol,selectedC
   # get feature columns without response
   featureColNames <- selectedColNames[-match(names(Data)[predictorCol],selectedColNames)]
   predictorColNames <- names(Data)[predictorCol]
-  
+
   Data = Data[,selectedCols]
   Data[,predictorColNames] = factor(Data[,predictorColNames])
 
@@ -83,8 +91,8 @@ classifyFun <- function(classifierName,genclassifier,Data,predictorCol,selectedC
                                              featureColNames=featureColNames,expand.grid(obj),...)))[["acc"]]
     accTest[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
                                                  featureColNames=featureColNames,expand.grid(obj),...)))[["accTest"]]
-  }  
-  
+  }
+
   print(paste("Mean CV Accuracy",mean(acc)))
   print(paste("Mean Test Accuracy",mean(accTest)))
 
@@ -115,7 +123,7 @@ getTunedParam <- function(tuneTrainData,predictorCol,classifierName,featureColNa
   print(summary(obj))
   plot(obj)
 
-  
+
   return(obj)
 
 }
@@ -130,7 +138,7 @@ Classifier.svm <- function(trainData,testData,ModelTestData,predictorColNames,fe
   accTest <- sum(1 * (predTest==ModelTestData[,predictorColNames]))/length(predTest)
   accList <- list(acc=acc,accTest=accTest)
   return(accList)
-  
+
 }
 
 Classifier.knn <- function(trainData,testData,ModelTestData,predictorColNames,featureColNames,obj,...){

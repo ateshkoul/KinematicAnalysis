@@ -7,11 +7,12 @@
 ##'   \enumerate{
 ##'     \item Data = Data dataframe
 #'      \item featSel = column with different classes
+#'      \item featureCol = all the columns that contain features
 #'
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
-##'     \item f-scores
+##'     \item named numeric f-scores
 #'
 #'
 #'@author
